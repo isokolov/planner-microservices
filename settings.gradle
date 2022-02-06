@@ -5,6 +5,7 @@ includeBuild 'planner-gateway'
 includeBuild 'planner-config'
 includeBuild 'planner-entity'
 includeBuild 'planner-todo'
+includeBuild 'planner-utils'
 includeBuild 'planner-users'
 
 
