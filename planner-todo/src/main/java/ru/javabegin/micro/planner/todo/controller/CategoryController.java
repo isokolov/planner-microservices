@@ -1,10 +1,10 @@
 package ru.javabegin.micro.planner.todo.controller;
 
+import ru.javabegin.micro.planner.todo.entity.Category;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.javabegin.micro.planner.entity.Category;
 import ru.javabegin.micro.planner.todo.search.CategorySearchValues;
 import ru.javabegin.micro.planner.todo.service.CategoryService;
 

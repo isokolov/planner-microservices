@@ -1,12 +1,14 @@
 package ru.javabegin.micro.planner.todo.repo;
 
+import ru.javabegin.micro.planner.todo.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import ru.javabegin.micro.planner.entity.Category;
 
 import java.util.List;
+
+//import ru.javabegin.micro..entity.Category;
 
 
 // Вы можете уже сразу использовать все методы CRUD (Create, Read, Update, Delete)

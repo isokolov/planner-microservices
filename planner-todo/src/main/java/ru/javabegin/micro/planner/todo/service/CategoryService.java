@@ -1,7 +1,8 @@
 package ru.javabegin.micro.planner.todo.service;
 
+import ru.javabegin.micro.planner.todo.entity.Category;
 import org.springframework.stereotype.Service;
-import ru.javabegin.micro.planner.entity.Category;
+//import ru.javabegin.micro.planner.entity.Category;
 import ru.javabegin.micro.planner.todo.repo.CategoryRepository;
 
 import javax.transaction.Transactional;
