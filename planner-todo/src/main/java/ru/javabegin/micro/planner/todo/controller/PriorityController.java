@@ -6,7 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 // import ru.javabegin.micro.planner.entity.Priority;
 import ru.javabegin.micro.planner.todo.entity.Priority;
-import ru.javabegin.micro.planner.todo.resttemplate.UserRestBuilder;
+import ru.javabegin.micro.planner.todo.rest.resttemplate.UserRestBuilder;
+import ru.javabegin.micro.planner.todo.rest.webclient.UserWebClientBuilder;
 import ru.javabegin.micro.planner.todo.search.PrioritySearchValues;
 import ru.javabegin.micro.planner.todo.service.PriorityService;
 // import ru.javabegin.micro.planner.utils.resttemplate.UserRestBuilder;
@@ -38,13 +39,13 @@ public class PriorityController {
     private PriorityService priorityService;
 
     // микросервисы для работы с пользователями
-    private UserRestBuilder userRestBuilder;
+    private UserWebClientBuilder userWebClientBuilder;
 
     // используем автоматическое внедрение экземпляра класса через конструктор
     // не используем @Autowired ля переменной класса, т.к. "Field injection is not recommended "
-    public PriorityController(PriorityService priorityService, UserRestBuilder userRestBuilder) {
+    public PriorityController(PriorityService priorityService, UserWebClientBuilder userWebClientBuilder) {
         this.priorityService = priorityService;
-        this.userRestBuilder = userRestBuilder;
+        this.userWebClientBuilder = userWebClientBuilder;
     }
 
 
@@ -74,7 +75,7 @@ public class PriorityController {
         }
 
         // если такой пользователь существует
-        if (userRestBuilder.userExists(priority.getUserId())) { // вызываем микросервис из другого модуля
+        if (userWebClientBuilder.userExists(priority.getUserId())) { // вызываем микросервис из другого модуля
             return ResponseEntity.ok(priorityService.add(priority)); // возвращаем добавленный объект с заполненным ID
         }
 

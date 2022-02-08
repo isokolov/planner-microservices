@@ -9,7 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 // import ru.javabegin.micro.planner.entity.Task;
 import ru.javabegin.micro.planner.todo.entity.Task;
-import ru.javabegin.micro.planner.todo.resttemplate.UserRestBuilder;
+import ru.javabegin.micro.planner.todo.rest.resttemplate.UserRestBuilder;
+import ru.javabegin.micro.planner.todo.rest.webclient.UserWebClientBuilder;
 import ru.javabegin.micro.planner.todo.search.TaskSearchValues;
 import ru.javabegin.micro.planner.todo.service.TaskService;
 // import ru.javabegin.micro.planner.utils.resttemplate.UserRestBuilder;
@@ -43,13 +44,13 @@ public class TaskController {
     private final TaskService taskService; // сервис для доступа к данным (напрямую к репозиториям не обращаемся)
 
     // микросервисы для работы с пользователями
-    private UserRestBuilder userRestBuilder;
+    private UserWebClientBuilder userWebClientBuilder;
 
     // используем автоматическое внедрение экземпляра класса через конструктор
     // не используем @Autowired ля переменной класса, т.к. "Field injection is not recommended "
-    public TaskController(TaskService taskService, UserRestBuilder userRestBuilder) {
+    public TaskController(TaskService taskService, UserWebClientBuilder userWebClientBuilder) {
         this.taskService = taskService;
-        this.userRestBuilder = userRestBuilder;
+        this.userWebClientBuilder = userWebClientBuilder;
     }
 
 
@@ -75,7 +76,7 @@ public class TaskController {
         }
 
         // если такой пользователь существует
-        if (userRestBuilder.userExists(task.getUserId())) { // вызываем микросервис из другого модуля
+        if (userWebClientBuilder.userExists(task.getUserId())) { // вызываем микросервис из другого модуля
             return ResponseEntity.ok(taskService.add(task)); // возвращаем добавленный объект с заполненным ID
         }
 
