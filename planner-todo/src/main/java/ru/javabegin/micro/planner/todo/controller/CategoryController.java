@@ -67,6 +67,9 @@ public class CategoryController {
             return ResponseEntity.ok(categoryService.add(category)); // возвращаем добавленный объект с заполненным ID
         }
 
+        // подписываем на результат, asynchronous call with webclient
+        // userWebClientBuilder.userExistsAsync(category.getUserId()).subscribe(user -> System.out.println("user = " + user));
+
         // если пользователя НЕ существует
         return new ResponseEntity("user id=" + category.getUserId() + " not found", HttpStatus.NOT_ACCEPTABLE);
 
