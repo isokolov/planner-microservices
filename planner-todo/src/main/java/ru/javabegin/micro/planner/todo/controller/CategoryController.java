@@ -4,13 +4,16 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-//import ru.javabegin.micro.planner.entity.Category;
+// import ru.javabegin.micro.planner.entity.Category;
+// import ru.javabegin.micro.planner.entity.User;
 import ru.javabegin.micro.planner.todo.entity.Category;
+import ru.javabegin.micro.planner.todo.feign.UserFeignClient;
 import ru.javabegin.micro.planner.todo.rest.resttemplate.UserRestBuilder;
 import ru.javabegin.micro.planner.todo.rest.webclient.UserWebClientBuilder;
 import ru.javabegin.micro.planner.todo.search.CategorySearchValues;
 import ru.javabegin.micro.planner.todo.service.CategoryService;
-//import ru.javabegin.micro.planner.utils.resttemplate.UserRestBuilder;
+// import ru.javabegin.micro.planner.utils.rest.resttemplate.UserRestBuilder;
+// import ru.javabegin.micro.planner.utils.rest.webclient.UserWebClientBuilder;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -33,13 +36,21 @@ public class CategoryController {
     private CategoryService categoryService;
 
     // микросервисы для работы с пользователями
+    private UserRestBuilder userRestBuilder;
+
+    // микросервисы для работы с пользователями
     private UserWebClientBuilder userWebClientBuilder;
+
+    // клиент для вызова мс
+    private UserFeignClient userFeignClient;
 
     // используем автоматическое внедрение экземпляра класса через конструктор
     // не используем @Autowired ля переменной класса, т.к. "Field injection is not recommended "
-    public CategoryController(CategoryService categoryService, UserWebClientBuilder userWebClientBuilder) {
+    public CategoryController(CategoryService categoryService, UserFeignClient userFeignClient, UserRestBuilder userRestBuilder, UserWebClientBuilder userWebClientBuilder) {
         this.categoryService = categoryService;
+        this.userRestBuilder = userRestBuilder;
         this.userWebClientBuilder = userWebClientBuilder;
+        this.userFeignClient = userFeignClient;
     }
 
     @PostMapping("/all")
@@ -62,13 +73,24 @@ public class CategoryController {
             return new ResponseEntity("missed param: title MUST be not null", HttpStatus.NOT_ACCEPTABLE);
         }
 
-        // если такой пользователь существует
-        if (userWebClientBuilder.userExists(category.getUserId())) { // вызываем микросервис из другого модуля
-            return ResponseEntity.ok(categoryService.add(category)); // возвращаем добавленный объект с заполненным ID
-        }
+//        // если такой пользователь существует
+//        if (userRestBuilder.userExists(category.getUserId())) { // вызываем микросервис из другого модуля
+//            return ResponseEntity.ok(categoryService.add(category)); // возвращаем добавленный объект с заполненным ID
+//        }
 
-        // подписываем на результат, asynchronous call with webclient
-        // userWebClientBuilder.userExistsAsync(category.getUserId()).subscribe(user -> System.out.println("user = " + user));
+        // если такой пользователь существует
+//        if (userWebClientBuilder.userExists(category.getUserId())) { // вызываем микросервис из другого модуля
+//            return ResponseEntity.ok(categoryService.add(category)); // возвращаем добавленный объект с заполненным ID
+//        }
+
+
+//        // подписываем на результат
+//        userWebClientBuilder.userExistsAsync(category.getUserId()).subscribe(user -> System.out.println("user = " + user));
+
+        // вызов мс через feign интерфейс
+        if (userFeignClient.findUserById(category.getUserId()) != null){
+            return ResponseEntity.ok(categoryService.add(category));
+        }
 
         // если пользователя НЕ существует
         return new ResponseEntity("user id=" + category.getUserId() + " not found", HttpStatus.NOT_ACCEPTABLE);
