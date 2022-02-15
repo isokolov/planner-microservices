@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 // import ru.javabegin.micro.planner.entity.Category;
 // import ru.javabegin.micro.planner.entity.User;
 import ru.javabegin.micro.planner.todo.entity.Category;
+import ru.javabegin.micro.planner.todo.entity.User;
 import ru.javabegin.micro.planner.todo.feign.UserFeignClient;
 import ru.javabegin.micro.planner.todo.rest.resttemplate.UserRestBuilder;
 import ru.javabegin.micro.planner.todo.rest.webclient.UserWebClientBuilder;
@@ -88,7 +89,14 @@ public class CategoryController {
 //        userWebClientBuilder.userExistsAsync(category.getUserId()).subscribe(user -> System.out.println("user = " + user));
 
         // вызов мс через feign интерфейс
-        if (userFeignClient.findUserById(category.getUserId()) != null){
+
+        ResponseEntity<User> result =  userFeignClient.findUserById(category.getUserId());
+
+        if (result == null){ // если мс недоступен - вернется null
+            return new ResponseEntity("система пользователей недоступна, попробуйте позже", HttpStatus.NOT_FOUND);
+        }
+
+        if (result.getBody() != null){ // если пользователь не пустой
             return ResponseEntity.ok(categoryService.add(category));
         }
 

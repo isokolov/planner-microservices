@@ -6,9 +6,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import org.springframework.integration.core.MessageProducer;
 import org.springframework.web.bind.annotation.*;
 // import ru.javabegin.micro.planner.entity.User;
 import ru.javabegin.micro.planner.users.entity.User;
+
 import ru.javabegin.micro.planner.users.rest.webclient.UserWebClientBuilder;
 import ru.javabegin.micro.planner.users.search.UserSearchValues;
 import ru.javabegin.micro.planner.users.service.UserService;
@@ -78,13 +81,17 @@ public class UserController {
         // добавляем пользователя
         user = userService.add(user);
 
-        if (user != null) {
-            // заполняем начальные данные пользователя (в параллелном потоке)
-            userWebClientBuilder.initUserData(user.getId()).subscribe(result -> {
-                        System.out.println("user populated: " + result);
-                    }
-            );
-        }
+//        if (user != null) {
+//            // заполняем начальные данные пользователя (в параллелном потоке)
+//            userWebClientBuilder.initUserData(user.getId()).subscribe(result -> {
+//                        System.out.println("user populated: " + result);
+//                    }
+//            );
+//        }
+
+        /*if (user != null) { // если пользователь добавился
+            messageProducer.initUserData(user.getId()); // отправляем сообщение в канал
+        }*/
 
         return ResponseEntity.ok(user); // возвращаем созданный объект со сгенерированным id
 
