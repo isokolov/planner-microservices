@@ -6,16 +6,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import org.springframework.integration.core.MessageProducer;
 import org.springframework.web.bind.annotation.*;
-// import ru.javabegin.micro.planner.entity.User;
 import ru.javabegin.micro.planner.users.entity.User;
-
+import ru.javabegin.micro.planner.users.mq.MessageProducer;
 import ru.javabegin.micro.planner.users.rest.webclient.UserWebClientBuilder;
 import ru.javabegin.micro.planner.users.search.UserSearchValues;
 import ru.javabegin.micro.planner.users.service.UserService;
-// import ru.javabegin.micro.planner.utils.rest.webclient.UserWebClientBuilder;
+
 
 import java.text.ParseException;
 import java.util.NoSuchElementException;
@@ -42,16 +39,17 @@ public class UserController {
 
     public static final String ID_COLUMN = "id"; // имя столбца id
     private final UserService userService; // сервис для доступа к данным (напрямую к репозиториям не обращаемся)
+    private MessageProducer messageProducer; // утилита для отправки сообщений
 
     // микросервисы для работы с пользователями
     private UserWebClientBuilder userWebClientBuilder;
 
     // используем автоматическое внедрение экземпляра класса через конструктор
     // не используем @Autowired ля переменной класса, т.к. "Field injection is not recommended "
-    public UserController(UserService userService, UserWebClientBuilder userWebClientBuilder) {
+    public UserController(MessageProducer messageProducer, UserService userService, UserWebClientBuilder userWebClientBuilder) {
         this.userService = userService;
         this.userWebClientBuilder = userWebClientBuilder;
-
+        this.messageProducer = messageProducer;
     }
 
 
@@ -89,9 +87,9 @@ public class UserController {
 //            );
 //        }
 
-        /*if (user != null) { // если пользователь добавился
+        if (user != null) { // если пользователь добавился
             messageProducer.initUserData(user.getId()); // отправляем сообщение в канал
-        }*/
+        }
 
         return ResponseEntity.ok(user); // возвращаем созданный объект со сгенерированным id
 
